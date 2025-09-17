@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --primary-hover: #357abD;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+        }
+        
+        .form-title {
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+        
+        .input-field:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.15);
+        }
+        
+        .input-field.invalid {
+            border-color: var(--error-color);
+        }
+        
+        .error-msg {
+            color: var(--error-color);
+            font-size: 13px;
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .error-msg.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .notification {
+            background: var(--success-color);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .notification.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">Formulário de Cadastro</h1>
+        
+        <form id="cadastroForm" novalidate>
+            <div class="input-group">
+                <label class="input-label" for="nomeCompleto">Nome completo*</label>
+                <input class="input-field" type="text" id="nomeCompleto" placeholder="Digite seu nome completo" required>
+                <div class="error-msg" data-error="nomeCompleto">O nome deve ter pelo menos 3 caracteres</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="emailUsuario">E-mail*</label>
+                <input class="input-field" type="email" id="emailUsuario" placeholder="seu@email.com" required>
+                <div class="error-msg" data-error="emailUsuario">Digite um e-mail válido contendo @</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="telefoneContato">Telefone*</label>
+                <input class="input-field" type="tel" id="telefoneContato" placeholder="(11) 99999-9999" required>
+                <div class="error-msg" data-error="telefoneContato">Digite um telefone válido</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="documentoCpf">CPF*</label>
+                <input class="input-field" type="text" id="documentoCpf" placeholder="123.456.789-00" required>
+                <div class="error-msg" data-error="documentoCpf">Digite um CPF válido</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="dataNasc">Data de nascimento*</label>
+                <input class="input-field" type="date" id="dataNasc" required>
+                <div class="error-msg" data-error="dataNasc">Você deve ter pelo menos 18 anos</div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Cadastrar</button>
+        </form>
+        
+        <div class="notification" id="sucessoMsg">
+            Cadastro realizado com sucesso!
+        </div>
+    </div>
+
+    <script>
+        class FormularioCadastro {
+            constructor() {
+                this.form = document.getElementById('cadastroForm');
+                this.campos = {
+                    nomeCompleto: document.getElementById('nomeCompleto'),
+                    emailUsuario: document.getElementById('emailUsuario'),
+                    telefoneContato: document.getElementById('telefoneContato'),
+                    documentoCpf: document.getElementById('documentoCpf'),
+                    dataNasc: document.getElementById('dataNasc')
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.aplicarMascaras();
+                this.configurarEventos();
+            }
+            
+            aplicarMascaras() {
+                
+                this.campos.telefoneContato.addEventListener('input', (e) => {
+                    const valor = e.target.value.replace(/\D/g, '');
+                    let formatado = valor;
+                    
+                    if (valor.length <= 11) {
+                        formatado = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+                        formatado = formatado.replace(/(\d)(\d{4})$/, '$1-$2');
+                    }
+                    
+                    e.target.value = formatado;
+                });
+                
+                
+                this.campos.documentoCpf.addEventListener('input', (e) => {
+                    const valor = e.target.value.replace(/\D/g, '');
+                    let formatado = valor;
+                    
+                    if (valor.length <= 11) {
+                        formatado = valor.replace(/(\d{3})(\d)/, '$1.$2');
+                        formatado = formatado.replace(/(\d{3})(\d)/, '$1.$2');
+                        formatado = formatado.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    }
+                    
+                    e.target.value = formatado;
+                });
+            }
+            
+            configurarEventos() {
+                
+                Object.keys(this.campos).forEach(campo => {
+                    this.campos[campo].addEventListener('blur', () => this.validarCampo(campo));
+                    this.campos[campo].addEventListener('input', () => this.limparErro(campo));
+                });
+                
+                
+                this.form.addEventListener('submit', (e) => this.processarFormulario(e));
+            }
+            
+            validarCampo(nomeCampo) {
+                const campo = this.campos[nomeCampo];
+                const valor = campo.value.trim();
+                let valido = true;
+                
+                switch(nomeCampo) {
+                    case 'nomeCompleto':
+                        valido = valor.length >= 3;
+                        break;
+                        
+                    case 'emailUsuario':
+                        valido = valor.includes('@') && valor.length > 0;
+                        break;
+                        
+                    case 'telefoneContato':
+                        valido = valor.length >= 14;
+                        break;
+                        
+                    case 'documentoCpf':
+                        valido = valor.length >= 14;
+                        break;
+                        
+                    case 'dataNasc':
+                        valido = this.validarIdade(valor);
+                        break;
+                }
+                
+                if (valido) {
+                    this.limparErro(nomeCampo);
+                } else {
+                    this.mostrarErro(nomeCampo);
+                }
+                
+                return valido;
+            }
+            
+            validarIdade(dataNascimento) {
+                if (!dataNascimento) return false;
+                
+                const nascimento = new Date(dataNascimento);
+                const hoje = new Date();
+                let idade = hoje.getFullYear() - nascimento.getFullYear();
+                const diferenciaMes = hoje.getMonth() - nascimento.getMonth();
+                
+                if (diferenciaMes < 0 || (diferenciaMes === 0 && hoje.getDate() < nascimento.getDate())) {
+                    idade--;
+                }
+                
+                return idade >= 18;
+            }
+            
+            mostrarErro(nomeCampo) {
+                const campo = this.campos[nomeCampo];
+                const erro = document.querySelector(`[data-error="${nomeCampo}"]`);
+                
+                campo.classList.add('invalid');
+                erro.classList.add('show');
+            }
+            
+            limparErro(nomeCampo) {
+                const campo = this.campos[nomeCampo];
+                const erro = document.querySelector(`[data-error="${nomeCampo}"]`);
+                
+                campo.classList.remove('invalid');
+                erro.classList.remove('show');
+            }
+            
+            validarFormulario() {
+                let formularioValido = true;
+                
+                Object.keys(this.campos).forEach(campo => {
+                    if (!this.validarCampo(campo)) {
+                        formularioValido = false;
+                    }
+                });
+                
+                return formularioValido;
+            }
+            
+            processarFormulario(evento) {
+                evento.preventDefault();
+                
+                if (this.validarFormulario()) {
+                    this.exibirSucesso();
+                    this.resetarFormulario();
+                }
+            }
+            
+            exibirSucesso() {
+                const notificacao = document.getElementById('sucessoMsg');
+                notificacao.classList.add('active');
+                
+                setTimeout(() => {
+                    notificacao.classList.remove('active');
+                }, 3000);
+            }
+            
+            resetarFormulario() {
+                this.form.reset();
+                
+                
+                Object.keys(this.campos).forEach(campo => {
+                    this.limparErro(campo);
+                });
+            }
+        }
+        
+       
+        document.addEventListener('DOMContentLoaded', () => {
+            new FormularioCadastro();
+        });
+    </script>
+</body>
+</html>
