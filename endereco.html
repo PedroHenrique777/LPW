@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Endereço</title>
+    <link rel="stylesheet" href="script.js">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .form-group input.success {
+            border-color: #27ae60;
+            background: #f2fdf4;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .uf-field {
+            flex: 0 0 120px !important;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #1565c0;
+            font-size: 0.9rem;
+        }
+
+        .form-info h4 {
+            margin-bottom: 8px;
+            color: #0d47a1;
+        }
+
+        .form-info ul {
+            margin-left: 20px;
+        }
+
+        .form-info li {
+            margin-bottom: 3px;
+        }
+
+        /* Animações para feedback visual */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes pulse-success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-success {
+            animation: pulse-success 0.3s ease-in-out;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .uf-field {
+                flex: 1 !important;
+            }
+        }
+
+        /* Indicador de campo obrigatório */
+        .form-group.required-field label::after {
+            content: " *";
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📍 Cadastro de Endereço</h1>
+            <p>Preencha todos os campos obrigatórios</p>
+        </div>
+
+        <div class="form-info">
+            <h4>📋 Instruções de preenchimento:</h4>
+            <ul>
+                <li><strong>CEP:</strong> Será formatado automaticamente (00000-000)</li>
+                <li><strong>Logradouro:</strong> Mínimo de 5 caracteres</li>
+                <li><strong>Número:</strong> Apenas dígitos</li>
+                <li><strong>UF:</strong> Apenas 2 letras (será convertido para maiúsculo)</li>
+                <li><strong>Complemento:</strong> Campo opcional</li>
+            </ul>
+        </div>
+
+        <form id="enderecoForm">
+            <!-- CEP -->
+            <div class="form-group required-field">
+                <label for="cep">CEP</label>
+                <input 
+                    type="text" 
+                    id="cep" 
+                    name="cep" 
+                    placeholder="00000-000"
+                    maxlength="9"
+                    required
+                >
+            </div>
+
+            <!-- Logradouro -->
+            <div class="form-group required-field">
+                <label for="logradouro">Logradouro</label>
+                <input 
+                    type="text" 
+                    id="logradouro" 
+                    name="logradouro" 
+                    placeholder="Ex: Rua das Flores, Avenida Brasil..."
+                    required
+                >
+            </div>
+
+            <!-- Número e UF na mesma linha -->
+            <div class="form-row">
+                <div class="form-group required-field">
+                    <label for="numero">Número</label>
+                    <input 
+                        type="text" 
+                        id="numero" 
+                        name="numero" 
+                        placeholder="123"
+                        required
+                    >
+                </div>
+
+                <div class="form-group required-field uf-field">
+                    <label for="uf">UF</label>
+                    <input 
+                        type="text" 
+                        id="uf" 
+                        name="uf" 
+                        placeholder="SP"
+                        maxlength="2"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Complemento -->
+            <div class="form-group">
+                <label for="complemento">Complemento</label>
+                <input 
+                    type="text" 
+                    id="complemento" 
+                    name="complemento" 
+                    placeholder="Apt 101, Bloco A, Casa 2... (opcional)"
+                >
+            </div>
+
+            <button type="submit" class="submit-btn">
+                ✅ Cadastrar Endereço
+            </button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
